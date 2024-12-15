@@ -1,23 +1,20 @@
-name: Release Multiplatform Rust Binary
+name: Release Statically Linked Rust Binary
 
 on:
   push:
     tags:
-      - 'v*'  # Trigger on tags like 'v1.0.0'
+      - 'v*'
 
 jobs:
   build:
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-latest, macos-latest]
         target:
           - x86_64-unknown-linux-musl
           - aarch64-unknown-linux-musl
           - x86_64-pc-windows-gnu
           - x86_64-pc-windows-msvc
-          - x86_64-apple-darwin
-          - aarch64-apple-darwin
-    runs-on: ${{ matrix.os }}
 
     env:
       BINARY_NAME: Project
@@ -30,32 +27,20 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install Cross
-        if: ${{ matrix.os == 'ubuntu-22.04' }}
         run: cargo install cross --force
 
       - name: Install Target for Cross Compilation
-        if: ${{ matrix.os == 'ubuntu-22.04' }}
         run: rustup target add ${{ matrix.target }}
 
-      - name: Build
-        run: |
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            cargo build --target ${{ matrix.target }} --release
-          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            cargo build --target ${{ matrix.target }} --release
-          else
-            cross build --target ${{ matrix.target }} --release --verbose
+      - name: Build with Cross
+        run: cross build --target ${{ matrix.target }} --release --verbose
 
       - name: Create Release Archive
         run: |
           mkdir -p release
-
           if [[ "${{ matrix.target }}" == *"windows"* ]]; then
             cp target/${{ matrix.target }}/release/$BINARY_NAME.exe release/
             zip -r release/${{ matrix.target }}.zip release/$BINARY_NAME.exe
-          elif [[ "${{ matrix.target }}" == *"darwin"* ]]; then
-            cp target/${{ matrix.target }}/release/$BINARY_NAME release/
-            tar -czvf release/${{ matrix.target }}.tar.gz -C release $BINARY_NAME
           else
             cp target/${{ matrix.target }}/release/$BINARY_NAME release/
             tar -czvf release/${{ matrix.target }}.tar.gz -C release $BINARY_NAME
@@ -64,6 +49,8 @@ jobs:
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
-          files: release/*.*
+          files: |
+            release/*.tar.gz
+            release/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.PROJECT }}
