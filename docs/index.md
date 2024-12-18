@@ -16,17 +16,15 @@ I don’t want to create something that I can’t implement using RUST.
 
 ## Solution (LATER!)
 Create a website (or application) that helps users wake up and feel great for the day ahead.
+Provide simple exercises for warming up, (if it possible, including descriptions and pictures).
+Interact with users through specific commands, such as:
+- Who are you? (Beginner/Amateur/Beast)
+- How much time do you have today? (5/10/15 minutes)
 
-    Provide simple exercises for warming up, including descriptions and pictures.
+Based on the user’s answers, the app will generate a personalized exercise routine.
 
-    Interact with users through specific commands, such as:
-        Who are you? (Beginner/Amateur/Beast)
-        How much time do you have today? (5/10/15 minutes)
-
-    Based on the user’s answers, the app will generate a personalized exercise routine.
-
-    Additional Feature:
-        Integrate the app with an alarm clock. When the user wakes up with the app’s alarm, they can immediately create a personalized morning exercise program.
+Additional Feature:
+Integrate the app with an alarm clock. When the user wakes up with the app’s alarm, they can immediately create a personalized morning exercise program.
 ## Implementation
 
 <Share your binaries to download here>
