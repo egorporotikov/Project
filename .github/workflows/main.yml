@@ -53,4 +53,4 @@ jobs:
             release/*.tar.gz
             release/*.zip
         env:
-          GITHUB_TOKEN: ${{ secrets.PROJECT }}
+          GITHUB_TOKEN: ${{ secrets.Project }}
