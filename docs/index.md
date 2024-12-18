@@ -1,26 +1,32 @@
-# Project (name "Good morning!")
+# Project: "Good morning!"
 
 ## Problem Statement
 
 
-As a <user> user
-I want to get exercises for morning exersice traning and feel full of power after.  
-Targeted group:everyone.  
-Warming up is a key of productive day, especialy in winter. When there is dark and cold outside in the morning, we have to find some power for new day.  
+As a user,
+I want to have access to exercises for morning training that help me feel energized and ready to tackle the day.
+
+Target Group: Everyone.
+
+Warming up is key to a productive day, especially in winter. When it’s dark and cold outside in the morning, we need a way to find the energy to face the day ahead.  
 
 <Constraints - What do I not want?>
 
-I don't want to create something, waht i can't perform with RUST.
+I don’t want to create something that I can’t implement using RUST.
 
 ## Solution (LATER!)
-Create a site (application), which will help user to wake up and feel great for new day.
-1. Found some simple exercises for training (maybe with description and pictures)
-2. Interact with user via special comand like:
-- Who are you? (beginner/amateur/beast)
-- How mach time do you have today? (5/10/15)
-Depends on the answers user will get somme exercises based on the request.
+Create a website (or application) that helps users wake up and feel great for the day ahead.
 
-Additionally: use it with alarm. (user wake up with alarm from app and in the same time cann create a programm exercises for warming up)
+    Provide simple exercises for warming up, including descriptions and pictures.
+
+    Interact with users through specific commands, such as:
+        Who are you? (Beginner/Amateur/Beast)
+        How much time do you have today? (5/10/15 minutes)
+
+    Based on the user’s answers, the app will generate a personalized exercise routine.
+
+    Additional Feature:
+        Integrate the app with an alarm clock. When the user wakes up with the app’s alarm, they can immediately create a personalized morning exercise program.
 ## Implementation
 
 <Share your binaries to download here>
