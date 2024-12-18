@@ -7,14 +7,19 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
     strategy:
       matrix:
-        target:
-          - x86_64-unknown-linux-musl
-          - aarch64-unknown-linux-musl
-          - x86_64-pc-windows-gnu
-          - x86_64-pc-windows-msvc
+        include:
+          - os: ubuntu-22.04
+            target: x86_64-unknown-linux-musl
+          - os: ubuntu-22.04
+            target: aarch64-unknown-linux-musl
+          - os: windows-latest
+            target: x86_64-pc-windows-gnu
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+
+    runs-on: ${{ matrix.os }}
 
     env:
       BINARY_NAME: Project
@@ -26,14 +31,20 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Install Cross
-        run: cargo install cross --force
+      - name: Install Dependencies
+        if: runner.os == 'Linux'
+        run: |
+          if [[ "${{ matrix.target }}" == *"windows-gnu"* ]]; then
+            sudo apt-get update
+            sudo apt-get install -y mingw-w64
+          fi
 
-      - name: Install Target for Cross Compilation
+      - name: Install Target
         run: rustup target add ${{ matrix.target }}
 
-      - name: Build with Cross
-        run: cross build --target ${{ matrix.target }} --release --verbose
+      - name: Build
+        run: |
+          cargo build --target ${{ matrix.target }} --release
 
       - name: Create Release Archive
         run: |
