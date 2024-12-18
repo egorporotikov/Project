@@ -3,11 +3,13 @@
 ## Problem Statement
 
 
-As a <user>
-I want to get exercises for morning exersice traning and feel full of power after.
-Targeted group:everyone.
-Warming up is a key of productive day, especialy in winter. When there is dark and cold outside in the morning, we have to find some power for new day.
+As a <user> user
+I want to get exercises for morning exersice traning and feel full of power after.  
+Targeted group:everyone.  
+Warming up is a key of productive day, especialy in winter. When there is dark and cold outside in the morning, we have to find some power for new day.  
+
 <Constraints - What do I not want?>
+
 I don't want to create something, waht i can't perform with RUST.
 
 ## Solution (LATER!)
