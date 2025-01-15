@@ -3,42 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Exercise Generator</title>
-    <script type="module">
-        // Import the WASM file and bindings
-        import * as wasm from "./pkg/project_bg.wasm"; // Path to the WASM file
-        import { __wbg_set_wasm } from "./pkg/project.js"; // Path to the JavaScript bindings
-
-        // Initialize WASM
-        __wbg_set_wasm(wasm);
-
-        // Function to call the WASM function when button is clicked
-        function generateExerciseProgram() {
-            const minutes = parseInt(document.getElementById("duration").value); // Get the selected duration from the dropdown
-            const result = wasm.generate_program(minutes); // Call the WASM function with the selected minutes
-
-            // Display the result
-            document.getElementById("result").innerText = result;
-        }
-
-        // Wait for the WASM module to be loaded
-        window.onload = () => {
-            // Attach the event listener to the button
-            document.getElementById("generate-button").addEventListener("click", generateExerciseProgram);
-        };
-    </script>
+    <title>Exercise Generator</title>
 </head>
 <body>
     <h1>Random Exercise Generator</h1>
+
     <label for="duration">Select duration (minutes):</label>
     <select id="duration">
         <option value="5">5 minutes</option>
         <option value="10">10 minutes</option>
         <option value="15">15 minutes</option>
     </select>
-    <button id="generate-button">Generate Exercise Program</button>
 
-    <h3>Your Exercise Program:</h3>
-    <pre id="result">Your program will be displayed here.</pre>
+    <button id="generateBtn">Generate Program</button>
+    <p id="exerciseProgram"></p>
+
+    <script type="module">
+        import init from './pkg/project.js';  // Path to your WASM JavaScript bindings
+
+        // Initialize the WASM module
+        init().then(() => {
+            document.getElementById('generateBtn').addEventListener('click', () => {
+                const minutes = parseInt(document.getElementById('duration').value, 10);
+                const program = wasm.generate_program(minutes);
+                document.getElementById('exerciseProgram').textContent = program;
+            });
+        }).catch(console.error);
+    </script>
 </body>
 </html>
