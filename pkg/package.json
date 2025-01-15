@@ -1,0 +1,15 @@
+{
+  "name": "project",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "project_bg.wasm",
+    "project.js",
+    "project.d.ts"
+  ],
+  "main": "project.js",
+  "types": "project.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

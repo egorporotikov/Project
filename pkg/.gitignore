@@ -1,4 +1,3 @@
-/target
 !pkg/project.js
 !pkg/project_bg.wasm
 !pkg/project_bg.wasm.d.ts
