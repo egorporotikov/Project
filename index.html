@@ -21,11 +21,13 @@
     <pre id="program"></pre>
 
     <script type="module">
-        // Import the WASM module and initialize it
-        import * as wasm from "./pkg/Project_bg.wasm"; // Make sure the path matches the location of your .wasm file
-        import { __wbg_set_wasm } from "./pkg/Project_bg.js"; // The generated JS bindings file
+        // Import the WASM module and JavaScript bindings
+        import * as wasm from "./pkg/your_project_bg.wasm"; // Ensure this points to your .wasm file
+        import { __wbg_set_wasm } from "./pkg/your_project_bg.js"; // Ensure this points to your .js bindings
+
+        // Set up the WASM module
         __wbg_set_wasm(wasm);
-        wasm.__wbindgen_start(); // Start the WASM bindings
+        wasm.__wbindgen_start(); // Initialize the WASM module
 
         // Select the DOM elements
         const generateButton = document.getElementById('generate-btn');
@@ -34,7 +36,7 @@
 
         // Add an event listener to the "Generate Program" button
         generateButton.addEventListener('click', () => {
-            const minutes = parseInt(timeSelect.value); // Get selected time in minutes
+            const minutes = parseInt(timeSelect.value); // Get the selected time in minutes
             const program = wasm.generate_program(minutes); // Call the WASM function
             programDiv.textContent = program; // Display the generated program
         });
