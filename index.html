@@ -22,8 +22,8 @@
 
     <script type="module">
         // Import the WASM module and initialize it
-        import * as wasm from "./pkg/your_project_bg.wasm"; // Make sure the path matches the location of your .wasm file
-        import { __wbg_set_wasm } from "./pkg/your_project_bg.js"; // The generated JS bindings file
+        import * as wasm from "./pkg/Project_bg.wasm"; // Make sure the path matches the location of your .wasm file
+        import { __wbg_set_wasm } from "./pkg/Project_bg.js"; // The generated JS bindings file
         __wbg_set_wasm(wasm);
         wasm.__wbindgen_start(); // Start the WASM bindings
 
