@@ -1,35 +1,37 @@
 use wasm_bindgen::prelude::*;
+use rand::seq::SliceRandom;  // Optional, if you decide to use rand for shuffling
 
 #[wasm_bindgen]
 pub fn generate_program(minutes: u32) -> String {
-    let mut program = format!("Your {}-minute warm-up program:\n", minutes);
+    let exercises = vec![
+        "Deep breathing",
+        "Neck tilts",
+        "Arm stretches",
+        "Gentle torso twists",
+        "Light squats",
+        "Jumping in place",
+        "Jogging in place",
+        "Lunges",
+        "Side stretches",
+        "Hip rotations",
+    ];
 
-    match minutes {
-        5 => {
-            program.push_str("1. Deep breathing: 1 minute\n");
-            program.push_str("2. Neck tilts: 1 minute\n");
-            program.push_str("3. Arm stretches: 1 minute\n");
-            program.push_str("4. Gentle torso twists: 1 minute\n");
-            program.push_str("5. Light squats: 1 minute\n");
-        }
-        10 => {
-            program.push_str("1. Deep breathing: 1 minute\n");
-            program.push_str("2. Neck tilts: 1 minute\n");
-            program.push_str("3. Arm stretches: 2 minutes\n");
-            program.push_str("4. Torso twists: 2 minutes\n");
-            program.push_str("5. Light squats: 2 minutes\n");
-            program.push_str("6. Jumping in place: 2 minutes\n");
-        }
-        15 => {
-            program.push_str("1. Deep breathing: 2 minutes\n");
-            program.push_str("2. Neck tilts: 2 minutes\n");
-            program.push_str("3. Arm stretches: 3 minutes\n");
-            program.push_str("4. Torso twists: 3 minutes\n");
-            program.push_str("5. Squats with extended arms: 3 minutes\n");
-            program.push_str("6. Jumping in place or jogging in place: 2 minutes\n");
-        }
-        _ => program.push_str("Error: invalid number of minutes.\n"),
+    if ![5, 10, 15].contains(&minutes) {
+        return "Please select one of the available options: 5, 10, or 15 minutes.".to_string();
     }
 
+    let mut rng = rand::thread_rng();
+    let mut shuffled_exercises = exercises.clone();
+    shuffled_exercises.shuffle(&mut rng); // Shuffle the exercises
+
+    // Pick the first `minutes` exercises after shuffling
+    let selected_exercises = shuffled_exercises.into_iter().take(minutes as usize).collect::<Vec<_>>();
+
+    let mut program = format!("Your {}-minute warm-up program:\n", minutes);
+    for (i, exercise) in selected_exercises.iter().enumerate() {
+        program.push_str(&format!("{}. {}: {} minute{}\n", i + 1, exercise, 1, if minutes == 1 { "" } else { "s" }));
+    }
+
+    program.push_str("\nWe hope you start your day feeling great! ☀️");
     program
 }
