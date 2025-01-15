@@ -3,32 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exercise Generator</title>
+    <title>WASM Exercise Generator</title>
 </head>
 <body>
     <h1>Random Exercise Generator</h1>
 
-    <label for="duration">Select duration (minutes):</label>
-    <select id="duration">
+    <label for="minutes">Select duration (minutes):</label>
+    <select id="minutes">
         <option value="5">5 minutes</option>
         <option value="10">10 minutes</option>
         <option value="15">15 minutes</option>
     </select>
 
-    <button id="generateBtn">Generate Program</button>
-    <p id="exerciseProgram"></p>
+    <button id="generate">Generate Exercise Program</button>
 
+    <div id="exercise-program"></div>
+
+    <!-- Add your script to initialize the WASM module -->
     <script type="module">
-        import init from './pkg/project.js';  // Path to your WASM JavaScript bindings
+        // Import the WASM module (make sure the path is correct)
+        import init, { generate_program } from "./pkg/project.js";
 
         // Initialize the WASM module
-        init().then(() => {
-            document.getElementById('generateBtn').addEventListener('click', () => {
-                const minutes = parseInt(document.getElementById('duration').value, 10);
-                const program = wasm.generate_program(minutes);
-                document.getElementById('exerciseProgram').textContent = program;
+        async function run() {
+            await init();  // Initialize the WASM module
+            console.log("WASM module loaded successfully.");
+            
+            const button = document.getElementById('generate');
+            const minutesSelect = document.getElementById('minutes');
+            const programDiv = document.getElementById('exercise-program');
+            
+            // Attach event listener to the button
+            button.addEventListener('click', () => {
+                const minutes = parseInt(minutesSelect.value);
+                const program = generate_program(minutes);  // Call the WASM function
+                programDiv.innerText = program;  // Display the program in the div
             });
-        }).catch(console.error);
+        }
+
+        // Run the function to load WASM
+        run();
     </script>
 </body>
 </html>
