@@ -3,23 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WASM Test</title>
+    <title>Random Exercise Generator</title>
 </head>
 <body>
-    <h1>WASM Random Exercise Generator</h1>
-    <p id="program"></p>
+    <h1>Random Exercise Generator</h1>
+    <div>
+        <label for="time">Select duration (minutes):</label>
+        <select id="time">
+            <option value="5">5 minutes</option>
+            <option value="10">10 minutes</option>
+            <option value="15">15 minutes</option>
+        </select>
+        <button id="generate-btn">Generate Program</button>
+    </div>
+
+    <h2>Your Exercise Program:</h2>
+    <pre id="program"></pre>
 
     <script type="module">
-        import * as wasm from './pkg/Project_bg.wasm';
-        import { __wbg_set_wasm } from './pkg/Project_bg.js';
-
-        // Initialize WASM
+        // Import the WASM module and initialize it
+        import * as wasm from "./pkg/your_project_bg.wasm"; // Make sure the path matches the location of your .wasm file
+        import { __wbg_set_wasm } from "./pkg/your_project_bg.js"; // The generated JS bindings file
         __wbg_set_wasm(wasm);
-        wasm.__wbindgen_start();
+        wasm.__wbindgen_start(); // Start the WASM bindings
 
-        // Example: Generate a 10-minute warm-up program
-        const program = wasm.generate_program(10);
-        document.getElementById('program').innerText = program;
+        // Select the DOM elements
+        const generateButton = document.getElementById('generate-btn');
+        const timeSelect = document.getElementById('time');
+        const programDiv = document.getElementById('program');
+
+        // Add an event listener to the "Generate Program" button
+        generateButton.addEventListener('click', () => {
+            const minutes = parseInt(timeSelect.value); // Get selected time in minutes
+            const program = wasm.generate_program(minutes); // Call the WASM function
+            programDiv.textContent = program; // Display the generated program
+        });
     </script>
 </body>
 </html>
