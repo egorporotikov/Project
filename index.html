@@ -4,42 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Random Exercise Generator</title>
+    <script type="module">
+        // Import the WASM file and bindings
+        import * as wasm from "./pkg/project_bg.wasm"; // Path to the WASM file
+        import { __wbg_set_wasm } from "./pkg/project.js"; // Path to the JavaScript bindings
+
+        // Initialize WASM
+        __wbg_set_wasm(wasm);
+
+        // Function to call the WASM function when button is clicked
+        function generateExerciseProgram() {
+            const minutes = parseInt(document.getElementById("duration").value); // Get the selected duration from the dropdown
+            const result = wasm.generate_program(minutes); // Call the WASM function with the selected minutes
+
+            // Display the result
+            document.getElementById("result").innerText = result;
+        }
+
+        // Wait for the WASM module to be loaded
+        window.onload = () => {
+            // Attach the event listener to the button
+            document.getElementById("generate-button").addEventListener("click", generateExerciseProgram);
+        };
+    </script>
 </head>
 <body>
     <h1>Random Exercise Generator</h1>
-    <div>
-        <label for="time">Select duration (minutes):</label>
-        <select id="time">
-            <option value="5">5 minutes</option>
-            <option value="10">10 minutes</option>
-            <option value="15">15 minutes</option>
-        </select>
-        <button id="generate-btn">Generate Program</button>
-    </div>
+    <label for="duration">Select duration (minutes):</label>
+    <select id="duration">
+        <option value="5">5 minutes</option>
+        <option value="10">10 minutes</option>
+        <option value="15">15 minutes</option>
+    </select>
+    <button id="generate-button">Generate Exercise Program</button>
 
-    <h2>Your Exercise Program:</h2>
-    <pre id="program"></pre>
-
-    <script type="module">
-        // Import the WASM module and JavaScript bindings
-        import * as wasm from "./pkg/your_project_bg.wasm"; // Ensure this points to your .wasm file
-        import { __wbg_set_wasm } from "./pkg/your_project_bg.js"; // Ensure this points to your .js bindings
-
-        // Set up the WASM module
-        __wbg_set_wasm(wasm);
-        wasm.__wbindgen_start(); // Initialize the WASM module
-
-        // Select the DOM elements
-        const generateButton = document.getElementById('generate-btn');
-        const timeSelect = document.getElementById('time');
-        const programDiv = document.getElementById('program');
-
-        // Add an event listener to the "Generate Program" button
-        generateButton.addEventListener('click', () => {
-            const minutes = parseInt(timeSelect.value); // Get the selected time in minutes
-            const program = wasm.generate_program(minutes); // Call the WASM function
-            programDiv.textContent = program; // Display the generated program
-        });
-    </script>
+    <h3>Your Exercise Program:</h3>
+    <pre id="result">Your program will be displayed here.</pre>
 </body>
 </html>
