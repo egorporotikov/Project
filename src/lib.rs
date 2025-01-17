@@ -46,6 +46,6 @@ pub fn generate_program(minutes: u32) -> String {
         program.push_str(&format!("{}. {}: {} minute{}\n", i + 1, exercise, 1, if minutes == 1 { "" } else { "s" }));
     }
 
-    program.push_str("\nWe hope you start your day feeling great! ☀️");
+    program.push_str("\nWe hope you start your day feeling great!!! ☀️");
     program
 }
