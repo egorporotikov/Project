@@ -14,6 +14,20 @@ pub fn generate_program(minutes: u32) -> String {
         "Lunges",
         "Side stretches",
         "Hip rotations",
+        "High knees",
+        "Calf raises",
+        "Push-ups (knee or standard)",
+        "Wall sit",
+        "Plank",
+        "Side planks",
+        "Leg swings",
+        "Cat-cow stretch",
+        "Child's pose",
+        "Butterfly stretch",
+        "Shoulder rolls",
+        "Wrist stretches",
+        "Forward bends",
+        "Ankle rotations",
     ];
 
     if ![5, 10, 15].contains(&minutes) {

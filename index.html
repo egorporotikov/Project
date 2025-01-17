@@ -3,10 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WASM Exercise Generator</title>
+    <title>Good morning!</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('https://source.unsplash.com/1600x900/?morning,exercise');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-top: 20px;
+            color: #f4f9ff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        #quote {
+            font-size: 1.5rem;
+            margin: 20px auto;
+            padding: 10px;
+            max-width: 80%;
+            color: #dfe6ff;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+        }
+
+        select, button {
+            font-size: 1rem;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        button {
+            color: white;
+            background-color: #2a9d8f;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #21867a;
+        }
+
+        #exercise-program {
+            margin-top: 30px;
+            font-size: 1.2rem;
+            color: #f0f8ff;
+            white-space: pre-wrap;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+    </style>
 </head>
 <body>
-    <h1>Random Exercise Generator</h1>
+    <h1>Good Morning!</h1>
+    <p id="quote"></p>
 
     <label for="minutes">Select duration (minutes):</label>
     <select id="minutes">
@@ -19,10 +76,26 @@
 
     <div id="exercise-program"></div>
 
-    <!-- Add your script to initialize the WASM module -->
     <script type="module">
         // Import the WASM module (make sure the path is correct)
         import init, { generate_program } from "./pkg/project.js";
+
+        // Array of motivational quotes
+        const quotes = [
+            "Start your day with energy and positivity!",
+            "A little progress each day adds up to big results.",
+            "Consistency is the key to success!",
+            "Make your body the best home you’ll ever have.",
+            "Small steps lead to big achievements.",
+            "Wake up. Warm up. Win the day!",
+            "Fuel your morning with movement and mindfulness.",
+            "A fresh start begins with you!",
+            "Empower your day with a strong beginning!",
+            "You are your best investment—start now!"
+        ];
+
+        // Display a random motivational quote
+        document.getElementById("quote").textContent = quotes[Math.floor(Math.random() * quotes.length)];
 
         // Initialize the WASM module
         async function run() {
