@@ -2,7 +2,7 @@ use wasm_bindgen::prelude::*;
 use rand::seq::SliceRandom;
 
 #[wasm_bindgen]
-pub fn generate_program(minutes: u32) -> String {
+pub fn generate_program(total_minutes: u32) -> String {
     let exercises = vec![
         "Deep breathing",
         "Neck tilts",
@@ -30,24 +30,29 @@ pub fn generate_program(minutes: u32) -> String {
         "Ankle rotations",
     ];
 
-    // Ensure valid input
-    if ![5, 10, 15].contains(&minutes) {
+    if ![5, 10, 15].contains(&total_minutes) {
         return "Please select one of the available options: 5, 10, or 15 minutes.".to_string();
     }
 
-    let num_exercises = exercises.len() as u32; // Get the total number of available exercises
-    let max_exercises = minutes.min(num_exercises); // Pick the smaller of minutes or total exercises
-
     let mut rng = rand::thread_rng();
     let mut shuffled_exercises = exercises.clone();
-    shuffled_exercises.shuffle(&mut rng); // Shuffle the exercises
+    shuffled_exercises.shuffle(&mut rng);
 
-    // Pick the first `max_exercises` exercises after shuffling
-    let selected_exercises = shuffled_exercises.into_iter().take(max_exercises as usize).collect::<Vec<_>>();
+    let mut remaining_time = total_minutes;
+    let mut program = format!("Your {}-minute warm-up program:\n", total_minutes);
+    let mut i = 0;
 
-    let mut program = format!("Your {}-minute warm-up program:\n", minutes);
-    for (i, exercise) in selected_exercises.iter().enumerate() {
-        program.push_str(&format!("{}. {}: 1 minute{}\n", i + 1, exercise, if minutes == 1 { "" } else { "s" }));
+    while remaining_time > 0 && i < shuffled_exercises.len() {
+        let exercise_time = if remaining_time >= 2 { 2 } else { 1 }; // Assign 2 minutes if possible, else 1
+        program.push_str(&format!(
+            "{}. {}: {} minute{}\n",
+            i + 1,
+            shuffled_exercises[i],
+            exercise_time,
+            if exercise_time == 1 { "" } else { "s" }
+        ));
+        remaining_time -= exercise_time;
+        i += 1;
     }
 
     program.push_str("\nWe hope you start your day feeling great!!! ☀️");
