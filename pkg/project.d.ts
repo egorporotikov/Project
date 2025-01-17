@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export function generate_program(minutes: number): string;
+export function generate_program(total_minutes: number): string;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
