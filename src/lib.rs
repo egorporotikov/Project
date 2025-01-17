@@ -43,7 +43,8 @@ pub fn generate_program(total_minutes: u32) -> String {
     let mut i = 0;
 
     while remaining_time > 0 && i < shuffled_exercises.len() {
-        let exercise_time = if remaining_time >= 2 { 2 } else { 1 }; // Assign 2 minutes if possible, else 1
+        // Assign time per exercise
+        let exercise_time = if remaining_time > 1 { 2 } else { 1 };
         program.push_str(&format!(
             "{}. {}: {} minute{}\n",
             i + 1,
@@ -52,6 +53,21 @@ pub fn generate_program(total_minutes: u32) -> String {
             if exercise_time == 1 { "" } else { "s" }
         ));
         remaining_time -= exercise_time;
+        i += 1;
+    }
+
+    // If there are still minutes left, add additional exercises
+    while remaining_time > 0 {
+        let additional_time = if remaining_time > 1 { 2 } else { 1 };
+        let additional_exercise = shuffled_exercises.choose(&mut rng).unwrap();
+        program.push_str(&format!(
+            "{}. {}: {} minute{}\n",
+            i + 1,
+            additional_exercise,
+            additional_time,
+            if additional_time == 1 { "" } else { "s" }
+        ));
+        remaining_time -= additional_time;
         i += 1;
     }
 
