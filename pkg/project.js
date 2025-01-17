@@ -33,14 +33,14 @@ function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
 }
 /**
- * @param {number} total_minutes
+ * @param {number} minutes
  * @returns {string}
  */
-export function generate_program(total_minutes) {
+export function generate_program(minutes) {
     let deferred1_0;
     let deferred1_1;
     try {
-        const ret = wasm.generate_program(total_minutes);
+        const ret = wasm.generate_program(minutes);
         deferred1_0 = ret[0];
         deferred1_1 = ret[1];
         return getStringFromWasm0(ret[0], ret[1]);
