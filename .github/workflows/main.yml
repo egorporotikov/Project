@@ -27,8 +27,25 @@ jobs:
       - name: Install Target for Cross Compilation
         run: rustup target add ${{ matrix.target }}
 
+      - name: Install Dependencies (Linux Only)
+        if: contains(matrix.target, 'linux')
+        run: |
+          sudo apt update
+          sudo apt install -y gcc-aarch64-linux-gnu
+
+      - name: Clean Build Artifacts
+        run: cargo clean
+
       - name: Build with Cargo
-        run: cargo build --target ${{ matrix.target }} --release --verbose
+        run: |
+          cargo build --target ${{ matrix.target }} --release --verbose
+          if [ ! -f target/${{ matrix.target }}/release/$BINARY_NAME ]; then
+            echo "ERROR: Binary not found after build!"
+            exit 1
+          fi
+
+      - name: Debug Build Output
+        run: ls -R target/${{ matrix.target }}/release || echo "Build output not found!"
 
       - name: Create Release Archive
         run: |
@@ -42,4 +59,4 @@ jobs:
           files: |
             *.tar.gz
         env:
-          GITHUB_TOKEN: ${{ secrets.EGOR }}
+          EGOR: ${{ secrets.EGOR }}
