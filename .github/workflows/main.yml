@@ -1,4 +1,4 @@
-name: Release Statically Linked Rust Binary
+name: Release Statically Linked Rust Library
 
 on:
   push:
@@ -15,7 +15,7 @@ jobs:
           - aarch64-unknown-linux-gnu      # Linux (aarch64)
 
     env:
-      BINARY_NAME: Project
+      LIBRARY_NAME: project  # Change this to match your library name in Cargo.toml
 
     steps:
       - name: Checkout code
@@ -37,12 +37,7 @@ jobs:
         run: cargo clean
 
       - name: Build with Cargo
-        run: |
-          cargo build --target ${{ matrix.target }} --release --verbose
-          if [ ! -f target/${{ matrix.target }}/release/$BINARY_NAME ]; then
-            echo "ERROR: Binary not found after build!"
-            exit 1
-          fi
+        run: cargo build --target ${{ matrix.target }} --release --verbose
 
       - name: Debug Build Output
         run: ls -R target/${{ matrix.target }}/release || echo "Build output not found!"
@@ -50,8 +45,17 @@ jobs:
       - name: Create Release Archive
         run: |
           mkdir -p release
-          cp target/${{ matrix.target }}/release/$BINARY_NAME release/
-          tar -czvf ${{ matrix.target }}.tar.gz -C release $BINARY_NAME
+          if [[ -f target/${{ matrix.target }}/release/lib$LIBRARY_NAME.so ]]; then
+            cp target/${{ matrix.target }}/release/lib$LIBRARY_NAME.so release/
+          elif [[ -f target/${{ matrix.target }}/release/lib$LIBRARY_NAME.dylib ]]; then
+            cp target/${{ matrix.target }}/release/lib$LIBRARY_NAME.dylib release/
+          elif [[ -f target/${{ matrix.target }}/release/$LIBRARY_NAME.dll ]]; then
+            cp target/${{ matrix.target }}/release/$LIBRARY_NAME.dll release/
+          else
+            echo "ERROR: Library file not found!"
+            exit 1
+          fi
+          tar -czvf ${{ matrix.target }}.tar.gz -C release .
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
