@@ -11,9 +11,8 @@ jobs:
     strategy:
       matrix:
         target:
-          - x86_64-apple-darwin            # macOS
-          - x86_64-pc-windows-gnu          # Windows (GNU)
-          - x86_64-pc-windows-msvc         # Windows (MSVC)
+          - x86_64-unknown-linux-gnu       # Linux (x86_64)
+          - aarch64-unknown-linux-gnu      # Linux (aarch64)
 
     env:
       BINARY_NAME: Project
@@ -28,26 +27,19 @@ jobs:
       - name: Install Target for Cross Compilation
         run: rustup target add ${{ matrix.target }}
 
-      - name: Build with Cross
+      - name: Build with Cargo
         run: cargo build --target ${{ matrix.target }} --release --verbose
 
       - name: Create Release Archive
         run: |
           mkdir -p release
-
-          if [[ "${{ matrix.target }}" == *"windows"* ]]; then
-            cp target/${{ matrix.target }}/release/$BINARY_NAME.exe release/
-            zip -r ${{ matrix.target }}.zip release
-          elif [[ "${{ matrix.target }}" == *"darwin"* ]]; then
-            cp target/${{ matrix.target }}/release/$BINARY_NAME release/
-            tar -czvf ${{ matrix.target }}.tar.gz -C release $BINARY_NAME
-          fi
+          cp target/${{ matrix.target }}/release/$BINARY_NAME release/
+          tar -czvf ${{ matrix.target }}.tar.gz -C release $BINARY_NAME
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
           files: |
             *.tar.gz
-            *.zip
         env:
-          GITHUB_TOKEN: ${{ secrets.Project }}
+          GITHUB_TOKEN: ${{ secrets.EGOR }}
