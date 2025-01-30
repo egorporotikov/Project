@@ -1,4 +1,4 @@
-name: Release Statically Linked Rust Library
+name: Release Statically Linked Rust Binary
 
 on:
   push:
@@ -6,16 +6,16 @@ on:
       - 'v*'  # Trigger on tags like 'v1.0.0'
 
 jobs:
-  build:
+  build-linux:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         target:
-          - x86_64-unknown-linux-gnu       # Linux (x86_64)
-          - aarch64-unknown-linux-gnu      # Linux (aarch64)
+          - x86_64-unknown-linux-musl       # Linux (musl)
+          - aarch64-unknown-linux-musl      # ARM Linux (musl)
 
     env:
-      LIBRARY_NAME: project  # Change this to match your library name in Cargo.toml
+      BINARY_NAME: project
 
     steps:
       - name: Checkout code
@@ -24,43 +24,62 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Install Cross
+        run: cargo install cross
+
       - name: Install Target for Cross Compilation
         run: rustup target add ${{ matrix.target }}
 
-      - name: Install Dependencies (Linux Only)
-        if: contains(matrix.target, 'linux')
-        run: |
-          sudo apt update
-          sudo apt install -y gcc-aarch64-linux-gnu
+      - name: Build with Cross
+        run: cross build --target ${{ matrix.target }} --release --verbose
 
-      - name: Clean Build Artifacts
-        run: cargo clean
-
-      - name: Build with Cargo
-        run: cargo build --target ${{ matrix.target }} --release --verbose
-
-      - name: Debug Build Output
-        run: ls -R target/${{ matrix.target }}/release || echo "Build output not found!"
-
-      - name: Create Release Archive
+      - name: Create Release Archive (Linux)
         run: |
           mkdir -p release
-          if [[ -f target/${{ matrix.target }}/release/lib$LIBRARY_NAME.so ]]; then
-            cp target/${{ matrix.target }}/release/lib$LIBRARY_NAME.so release/
-          elif [[ -f target/${{ matrix.target }}/release/lib$LIBRARY_NAME.dylib ]]; then
-            cp target/${{ matrix.target }}/release/lib$LIBRARY_NAME.dylib release/
-          elif [[ -f target/${{ matrix.target }}/release/$LIBRARY_NAME.dll ]]; then
-            cp target/${{ matrix.target }}/release/$LIBRARY_NAME.dll release/
-          else
-            echo "ERROR: Library file not found!"
-            exit 1
-          fi
-          tar -czvf ${{ matrix.target }}.tar.gz -C release .
+          cp target/${{ matrix.target }}/release/$BINARY_NAME release/
+          tar -czvf ${{ matrix.target }}.tar.gz -C release $BINARY_NAME
 
-      - name: Upload Release Assets
+      - name: Upload Release Assets (Linux)
         uses: softprops/action-gh-release@v2
         with:
           files: |
             *.tar.gz
         env:
-          EGOR: ${{ secrets.EGOR }}
+          GITHUB_TOKEN: ${{ secrets.EGOR }}
+
+  build-windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        target:
+          - x86_64-pc-windows-msvc  # Windows (MSVC)
+
+    env:
+      BINARY_NAME: project.exe
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Target for Windows
+        run: rustup target add ${{ matrix.target }}
+
+      - name: Build for Windows
+        run: cargo build --target ${{ matrix.target }} --release --verbose
+
+      - name: Create Release Archive (Windows)
+        run: |
+          mkdir release
+          copy target\${{ matrix.target }}\release\%BINARY_NAME% release\
+          powershell Compress-Archive -Path release\* -DestinationPath ${{ matrix.target }}.zip
+
+      - name: Upload Release Assets (Windows)
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            *.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.EGOR }}
